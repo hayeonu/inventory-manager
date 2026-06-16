@@ -1,13 +1,17 @@
 import { getInventoryData, type InventoryRow } from '@/lib/sheets'
+import { AddTransactionForm } from '@/components/AddTransactionForm'
 import { Suspense } from 'react'
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">재고 현황</h1>
-          <p className="mt-1 text-sm text-gray-500">라로제 제품 현재 재고 조회</p>
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">재고 현황</h1>
+            <p className="mt-1 text-sm text-gray-500">라로제 제품 현재 재고 조회</p>
+          </div>
+          <AddTransactionForm />
         </div>
         <Suspense fallback={<TableSkeleton />}>
           <InventorySection />
