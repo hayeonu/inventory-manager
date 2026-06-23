@@ -35,7 +35,7 @@ async function InventorySection() {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
         <p className="text-sm font-medium text-red-800">오류: {errorMessage}</p>
-        <p className="mt-1 text-xs text-red-600">.env.local 파일의 Google API 자격증명을 확인하세요.</p>
+        <p className="mt-1 text-xs text-red-600">.env.local 파일의 DATABASE_URL을 확인하세요.</p>
       </div>
     )
   }
@@ -43,6 +43,11 @@ async function InventorySection() {
   const totalStock = inventory.reduce((s, r) => s + r.currentStock, 0)
   const shortageCount = inventory.filter((r) => r.shortage > 0).length
   const normalCount = inventory.filter((r) => r.status === '정상').length
+
+  const monthLabels = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
+  const activeMonths = Array.from({ length: 12 }, (_, i) => i).filter(
+    (i) => inventory.some((item) => item.months[i].in > 0 || item.months[i].out > 0),
+  )
 
   return (
     <div className="space-y-6">
@@ -65,11 +70,9 @@ async function InventorySection() {
                 <Th>제품명</Th>
                 <Th>카테고리</Th>
                 <Th align="right">전기이월</Th>
-                <Th align="right">1월 입/출고</Th>
-                <Th align="right">2월 입/출고</Th>
-                <Th align="right">3월 입/출고</Th>
-                <Th align="right">4월 입/출고</Th>
-                <Th align="right">5월 입/출고</Th>
+                {activeMonths.map((i) => (
+                  <Th key={i} align="right">{monthLabels[i]} 입/출고</Th>
+                ))}
                 <Th align="right">현재재고</Th>
                 <Th align="right">적정재고</Th>
                 <Th align="right">부족수량</Th>
@@ -89,11 +92,9 @@ async function InventorySection() {
                     {item.category}
                   </td>
                   <Td>{item.prevBalance.toLocaleString()}</Td>
-                  <MonthCell item={item.jan} />
-                  <MonthCell item={item.feb} />
-                  <MonthCell item={item.mar} />
-                  <MonthCell item={item.apr} />
-                  <MonthCell item={item.may} />
+                  {activeMonths.map((i) => (
+                    <MonthCell key={i} item={item.months[i]} />
+                  ))}
                   <td className="whitespace-nowrap px-4 py-3 text-right text-sm font-semibold text-blue-700">
                     {item.currentStock.toLocaleString()}
                   </td>
@@ -110,7 +111,7 @@ async function InventorySection() {
           </table>
         </div>
         <div className="border-t border-gray-100 px-4 py-3 text-xs text-gray-400">
-          Google Sheets에서 실시간 조회 · {new Date().toLocaleString('ko-KR')}
+          Supabase에서 실시간 조회 · {new Date().toLocaleString('ko-KR')}
         </div>
       </div>
     </div>
