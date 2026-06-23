@@ -4,8 +4,16 @@ import { revalidatePath } from 'next/cache'
 import { db } from '@/lib/db'
 import { products, transactions } from '@/lib/db/schema'
 import { eq, like, desc } from 'drizzle-orm'
+import { getProductTransactions, type TransactionRow } from '@/lib/sheets'
 
 export type ActionState = { success: boolean; message: string } | null
+
+export async function loadMoreTransactions(
+  code: string,
+  offset: number,
+): Promise<{ rows: TransactionRow[]; total: number }> {
+  return getProductTransactions(code, 10, offset)
+}
 
 export async function addTransactionAction(
   _prev: ActionState,

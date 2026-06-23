@@ -1,6 +1,7 @@
 import { getInventoryData, type InventoryRow } from '@/lib/sheets'
 import { AddTransactionForm } from '@/components/AddTransactionForm'
 import { Suspense } from 'react'
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -81,12 +82,14 @@ async function InventorySection() {
             </thead>
             <tbody className="divide-y divide-gray-100 bg-white">
               {inventory.map((item) => (
-                <tr key={item.productCode} className="hover:bg-gray-50 transition-colors">
+                <tr key={item.productCode} className="hover:bg-blue-50 transition-colors cursor-pointer group relative">
                   <td className="whitespace-nowrap px-4 py-3 text-xs font-mono text-gray-500">
                     {item.productCode}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900">
-                    {item.productName}
+                  <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
+                    <Link href={`/products/${item.productCode}`} className="after:absolute after:inset-0">
+                      {item.productName}
+                    </Link>
                   </td>
                   <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-500">
                     {item.category}
